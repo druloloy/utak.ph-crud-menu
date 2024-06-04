@@ -1,0 +1,106 @@
+@layer components {
+    .btn {
+        @apply flex flex-row items-center justify-center px-4 py-1 rounded-lg duration-300 transition-all;
+
+        &.btn-primary {
+            @apply bg-primary-400 text-white font-bold shadow-primary-950/25 shadow-md;
+            &:hover {
+                @apply bg-primary-500 mix-blend-darken;
+            }
+        }
+
+        &.btn-secondary {
+            @apply text-black font-bold border border-primary-600;
+            &:hover {
+                @apply bg-primary-950/10 mix-blend-darken;
+            }
+        }
+
+        &.btn-basic {
+            @apply text-primary-600 font-bold;
+            &:hover {
+                @apply text-primary-700;
+            }
+        }
+
+        &:active {
+            @apply opacity-40 shadow-none;
+        }
+
+        &:disabled {
+            @apply opacity-75 shadow-none;
+        }
+    }
+
+    .nav-item {
+        @apply list-none duration-300 transition-all rounded-r-2xl rounded-l-lg;
+
+        & > a {
+            @apply flex flex-row items-center justify-between px-2 py-1 gap-32;
+
+            & > span {
+                @apply text-end text-base md:text-lg lg:text-xl;
+            }
+        }
+
+        /* change text color while hover */
+        &:hover {
+            @apply bg-white;
+            & > a > span {
+                @apply text-primary-600;
+            }
+
+            & > a > svg {
+                @apply text-primary-600;
+            }
+        }
+
+        &.active {
+            @apply bg-white;
+            & > a > span {
+                @apply text-primary-600;
+            }
+
+            & > a > svg {
+                @apply text-primary-600;
+            }
+        }
+    }
+
+    .pill {
+        @apply text-black min-w-10 w-fit flex flex-row justify-between items-center text-sm px-2 rounded-full border-2 md:text-base;
+    }
+
+    .selection-field {
+        @apply relative text-base w-full px-4 py-2 pr-8 rounded-lg text-left bg-white border-2 border-solid border-primary-400 text-black transition-all outline-0;
+        & > svg {
+            @apply text-base absolute h-full top-0 right-2.5
+        }
+
+        &:focus-visible {
+            @apply ring-4 ring-primary-500/30 border-primary-600
+        }
+    }
+
+    .listbox {
+        @apply text-base font-sans p-1.5 my-3 w-80 max-h-56 rounded-lg overflow-auto outline-0 bg-white border-2 border-solid border-primary-300 text-black;
+        
+        & > li {
+            @apply list-none p-2 rounded-md cursor-default last-of-type:border-b-0
+        }
+    }
+    .textfield {
+        @apply w-full flex flex-row items-center px-4 py-2 bg-white border-2 outline-1 rounded-lg border-primary-400 outline-secondary-400 gap-2;
+
+        & > input {
+            @apply flex-1 text-black outline-0 bg-transparent text-base autofill:bg-transparent placeholder:text-black/50;
+        }
+    }
+
+    .image-input {
+       @apply duration-300 transition-all text-black;
+       & > .upload-box {
+            @apply w-full h-36 p-8 flex flex-col justify-center items-center px-2 border-2 border-primary-400 border-dashed hover:cursor-pointer;
+       }
+    }
+}

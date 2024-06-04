@@ -1,0 +1,41 @@
+@import "./styles/components.css";
+@import "./styles/utilities.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+    :root {
+        --color-primary-50: 255 249 235;
+        --color-primary-100: 255 237 198;
+        --color-primary-200: 255 216 136;
+        --color-primary-300: 255 191 74;
+        --color-primary-400: 255 173 51;
+        --color-primary-500: 249 129 7;
+        --color-primary-600: 221 92 2;
+        --color-primary-700: 183 61 6;
+        --color-primary-800: 148 46 12;
+        --color-primary-900: 148 46 12;
+        --color-primary-950: 70 18 2;
+
+        --color-secondary-50: 238 246 255;
+        --color-secondary-100: 217 235 255;
+        --color-secondary-200: 188 220 255;
+        --color-secondary-300: 142 200 255;
+        --color-secondary-400: 89 168 255;
+        --color-secondary-500: 51 133 255;
+        --color-secondary-600: 27 100 245;
+        --color-secondary-700: 20 79 225;
+        --color-secondary-800: 23 64 182;
+        --color-secondary-900: 25 58 143;
+        --color-secondary-950: 20 36 87;
+
+        --color-black: 27 28 30;
+        --color-white: 255 255 255;
+    }
+
+    ::selection {
+        @apply bg-primary-100 text-black;
+    }
+}
