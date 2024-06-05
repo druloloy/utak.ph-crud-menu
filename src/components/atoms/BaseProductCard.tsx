@@ -1,18 +1,8 @@
 import Pill from '@atoms/Pill';
 import React from 'react';
+import { ProductCardProps } from '@types';
 
-type Props = {
-	image: string;
-	name: string;
-	stock: number;
-	price: number;
-	cost: number;
-	currency: string;
-	options?: Array<string>;
-	selected?: boolean;
-};
-
-const ProductCard: React.FC<Props> = ({
+const BaseProductCard: React.FC<ProductCardProps> = ({
 	image,
 	name,
 	stock,
@@ -26,11 +16,11 @@ const ProductCard: React.FC<Props> = ({
 		<section
 			className={`grid grid-row-6 max-w-80 w-full shadow-lg rounded-xl pb-4 ${selected ? 'border-4 border-secondary-500 shadow-none' : ''}`}>
 			<section
-				className={`row-span-4 w-full aspect-square overflow-hidden rounded-xl border-4 ${selected ? 'border-secondary-500' : 'border-primary-400'}`}>
+				className={`row-span-4 w-full aspect-square overflow-hidden rounded-lg`}>
 				<img
 					src={image}
 					alt={name}
-					className="w-full h-full object-cover"
+					className="w-full h-full object-cover group-hover:scale-125 duration-1000 transition-all"
 				/>
 			</section>
 
@@ -67,4 +57,4 @@ const ProductCard: React.FC<Props> = ({
 	);
 };
 
-export default ProductCard;
+export default BaseProductCard;

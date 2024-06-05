@@ -25,7 +25,8 @@
       "@atoms/*": ["components/atoms/*"],
       "@molecules/*": ["components/molecules/*"],
       "@organisms/*": ["components/organisms/*"],
-      "@pages/*": ["pages/*"]
+      "@pages/*": ["pages/*"],
+      "@types": ["types"],
     }
   },
   "include": ["src"],

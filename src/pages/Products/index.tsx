@@ -1,5 +1,10 @@
+import ProductsProvider from 'providers/ProductsProvider';
 import Page from './Page';
 
 export default function Products() {
-	return <Page />;
+	return (
+		<ProductsProvider>
+			<Page />
+		</ProductsProvider>
+	);
 }

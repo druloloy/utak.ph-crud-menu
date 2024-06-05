@@ -5,17 +5,8 @@ import SelectionButton from '@atoms/SelectionButton';
 import SelectionOption from '@atoms/SelectionOption';
 import { prepareForSlot } from '@mui/base';
 import React from 'react';
-import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
-
-interface SelectionFieldProps {
-	name: string;
-	rules: Record<string, RegisterOptions>;
-	options: { [key: string]: string | number };
-	placeholder: string;
-	label?: string;
-	defaultValue?: string;
-	required?: boolean;
-}
+import { Controller, useFormContext } from 'react-hook-form';
+import { SelectionFieldProps } from '@types';
 
 const ButtonSlot = prepareForSlot(SelectionButton);
 
@@ -55,25 +46,25 @@ const SelectionField: React.FC<SelectionFieldProps> = ({
 				name={name}
 				control={control}
 				rules={rules}
-				render={({ field: { name, ref } }) => (
+				render={({ field: { name, ref, value } }) => (
 					<section className="flex flex-col text-left">
 						<FieldLabel text={label} required={required} />
 						<BaseSelect
 							component={ButtonSlot}
 							ref={ref}
 							name={name}
-							defaultValue={defaultValue || ''}
+							defaultValue={defaultValue || value || ''}
 							onChange={(event) => {
 								const matchedPair = optionsArray.find(
-									([key]) =>
-										key ==
+									(pair) =>
+										pair[1] ==
 										((event?.target as HTMLInputElement)
 											.textContent as string)
 								);
 								setValue(
 									name,
 									(matchedPair &&
-										(matchedPair[1] as string)) ||
+										(matchedPair[0] as string)) ||
 										null
 								);
 							}}>

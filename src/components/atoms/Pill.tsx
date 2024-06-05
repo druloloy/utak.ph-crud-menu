@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColorsType, PillProps } from 'types';
+import { ColorsType, PillProps } from '@types';
 
 const borderColor: Record<ColorsType, string> = {
 	'primary-50': 'border-primary-50',

@@ -2,7 +2,7 @@ import React from 'react';
 import * as MdIcons from 'react-icons/md';
 import { IconType } from 'react-icons';
 import clsx from 'clsx';
-import { ColorsType } from 'types';
+import { ColorsType } from '@types';
 
 export type IconTypes = keyof typeof MdIcons;
 

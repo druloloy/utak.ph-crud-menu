@@ -1,33 +1,11 @@
 import Icon from '@atoms/Icon';
 import Pill from '@atoms/Pill';
-import { TextareaAutosize } from '@mui/base';
-import React from 'react';
-import {
-	Controller,
-	FieldValues,
-	RegisterOptions,
-	UseFormGetValues,
-	UseFormRegister,
-	useFieldArray,
-	useFormContext
-} from 'react-hook-form';
+import React, { useCallback, useEffect } from 'react';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import BaseInput from '@atoms/BaseInput';
 import FieldLabel from '@atoms/FieldLabel';
 import FieldError from '@atoms/FieldError';
-
-type Props = {
-	name: string;
-	rules: Record<string, RegisterOptions>;
-	placeholder?: string;
-	label?: string;
-	required?: boolean;
-};
-
-type OptionItemProps = {
-	name: string;
-	removeItem: () => void;
-	getValues: UseFormGetValues<FieldValues>;
-};
+import { OptionInputProps, OptionItemProps } from '@types';
 
 const OptionItem: React.FC<OptionItemProps> = ({
 	name,
@@ -42,17 +20,19 @@ const OptionItem: React.FC<OptionItemProps> = ({
 	);
 };
 
-const OptionInput: React.FC<Props> = ({
+const MemoizedOptionItem = React.memo(OptionItem);
+
+const OptionInput: React.FC<OptionInputProps> = ({
 	name,
 	rules,
 	placeholder,
 	label,
-	required
+	required,
+	options
 }) => {
 	const inputName = `${name}-input`;
 	const {
 		control,
-		register,
 		getValues,
 		setValue,
 		formState: { errors }
@@ -61,15 +41,36 @@ const OptionInput: React.FC<Props> = ({
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name,
+		shouldUnregister: true,
 		rules: rules[name]
 	});
 
-	const addItem = () => {
+	useEffect(() => {
+		if (options) {
+			append(options);
+			setValue(inputName, '');
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const addItem = useCallback(() => {
 		const value: string = getValues(inputName);
 		if (!value) return;
 		append(value.trim());
 		setValue(inputName, '');
-	};
+	}, [append, getValues, inputName, setValue]);
+
+	useEffect(() => {
+		const addItemOnEnter = (e: KeyboardEvent) => {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				addItem();
+			}
+		};
+
+		window.addEventListener('keydown', addItemOnEnter);
+		return () => window.removeEventListener('keydown', addItemOnEnter);
+	}, [addItem]);
 
 	const removeItem = (index: number) => remove(index);
 
@@ -83,7 +84,7 @@ const OptionInput: React.FC<Props> = ({
 					return (
 						<section className="flex flex-col w-full gap-2">
 							<section className="flex flex-col text-left">
-								<FieldLabel text={label} />
+								<FieldLabel text={label} required={required} />
 								<BaseInput
 									{...field}
 									type="text"
@@ -104,7 +105,7 @@ const OptionInput: React.FC<Props> = ({
 
 							<section className="flex flex-row flex-wrap gap-2">
 								{fields.map((field, index) => (
-									<OptionItem
+									<MemoizedOptionItem
 										key={field.id}
 										name={`${name}.${index}`}
 										removeItem={() => removeItem(index)}

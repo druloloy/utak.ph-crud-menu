@@ -54,7 +54,7 @@ const BaseSelect = React.forwardRef(function CustomSelect<
 					);
 					return {
 						...resolvedSlotProps,
-						className: clsx(`z-10`, resolvedSlotProps?.className)
+						className: clsx(`z-20`, resolvedSlotProps?.className)
 					};
 				}
 			}}

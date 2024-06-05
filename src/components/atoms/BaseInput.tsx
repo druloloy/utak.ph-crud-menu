@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from '@mui/base/Input';
-import { InputType } from 'types';
+import { InputType } from '@types';
 
 const BaseInput = React.forwardRef(function CustomInput(
 	props: InputType,
