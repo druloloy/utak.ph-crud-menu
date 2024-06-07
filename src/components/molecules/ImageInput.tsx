@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import Icon from '@atoms/Icon';
 import Throbber from '@atoms/Throbber';
@@ -12,12 +12,12 @@ import { ImageInputProps } from '@types';
 const ImageInput: React.FC<ImageInputProps> = ({
 	rules,
 	name,
-	showPreview
+	showPreview,
+	defaultValue
 }) => {
 	const {
 		control,
 		setValue,
-		getValues,
 		formState: { errors }
 	} = useFormContext();
 	const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -25,9 +25,15 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
 	const [imageUploading, setImageUploading] = React.useState<boolean>(false);
 	const [imageBase64, setImageBase64] = React.useState<string | null>(
-		(getValues(name) as string) || null
+		defaultValue ?? null
 	);
 	const [isFileDragged, setIsFileDragged] = React.useState<boolean>(false);
+
+	useEffect(() => {
+		if (defaultValue) {
+			setImageBase64(defaultValue);
+		}
+	}, [defaultValue]);
 
 	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
@@ -97,10 +103,6 @@ const ImageInput: React.FC<ImageInputProps> = ({
 		setValue(name, '');
 	};
 
-	const dragStyle = clsx({
-		'bg-primary-100': isFileDragged
-	});
-
 	return (
 		<section className="image-input flex flex-col">
 			{showPreview && imageBase64 && <ImagePreview image={imageBase64} />}
@@ -131,7 +133,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
 							handleDragOver={handleDragOver}
 							handleDragLeave={handleDragLeave}
 							handleImageUpload={handleImageUpload}
-							dragStyle={dragStyle}
+							dragStyle={isFileDragged ? 'bg-primary-100' : ''}
 							placeholder={
 								!imageUploading ? (
 									<>

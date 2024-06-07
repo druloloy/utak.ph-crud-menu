@@ -65,9 +65,9 @@ export type SideNavItemProps = {
 } & React.HTMLAttributes<HTMLLIElement>;
 
 export type ProductCardProps = {
-	image: string;
+	thumbnail: string;
 	name: string;
-	stock: number;
+	stocks: number;
 	price: number;
 	cost: number;
 	currency: string;
@@ -85,6 +85,7 @@ export type ImageInputProps = {
 	rules: Record<string, RegisterOptions>;
 	name: string;
 	showPreview?: boolean;
+	defaultValue?: string;
 };
 
 export type OptionInputProps = {
@@ -133,12 +134,15 @@ export type BaseImageInputProps = {
 export type MenuModalProps = {
 	open: boolean;
 	closeModal: () => void;
-	item?: ProductItemType;
+	setProducts: React.Dispatch<
+		React.SetStateAction<Record<string, ProductItemType[]> | undefined>
+	>;
+	item?: ProductItemType | null;
 };
 
 export type ProductGroupProps = {
 	title: string;
 	name: string;
-	products: Array<ProductCardProps & { id: string }>;
+	products: ProductItemType[];
 	toggleBulkSelect?: boolean;
 };

@@ -29,6 +29,7 @@ const BaseImageInput = React.forwardRef(function CustomInput(
 			<Input
 				{...fields}
 				type="file"
+				value=""
 				slotProps={{
 					input: {
 						ref: (element) => {

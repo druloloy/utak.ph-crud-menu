@@ -13,6 +13,7 @@
   "dependencies": {
     "@firebase/app": "^0.10.5",
     "@firebase/database": "^1.0.5",
+    "@firebase/storage": "^0.12.5",
     "@mui/base": "^5.0.0-beta.40",
     "@react-spring/web": "^9.7.3",
     "clsx": "^2.1.1",
@@ -21,11 +22,13 @@
     "react-hook-form": "^7.51.5",
     "react-icons": "^5.2.1",
     "react-lazy-load-image-component": "^1.6.0",
+    "uuid": "^9.0.1",
     "vite-tsconfig-paths": "^4.3.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",

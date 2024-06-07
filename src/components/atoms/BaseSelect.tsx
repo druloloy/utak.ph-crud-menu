@@ -31,6 +31,7 @@ const BaseSelect = React.forwardRef(function CustomSelect<
 					);
 					return {
 						...resolvedSlotProps,
+						defaultValue: props.defaultValue,
 						className: resolvedSlotProps?.className
 					};
 				},

@@ -1,27 +1,29 @@
 import Button from '@atoms/Button';
 import Icon from '@atoms/Icon';
 import PageContainer from '@atoms/PageContainer';
-import ProductCard from '@atoms/BaseProductCard';
 import SelectionField from '@molecules/SelectionField';
 import ProductGroup from '@organisms/ProductGroup';
 import SearchBar from '@organisms/SearchBar';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import MenuModal from '@organisms/MenuModal';
-import ProductsProvider from 'providers/ProductsProvider';
 import useProduct from 'hooks/useProduct';
+import API from 'services/api';
 
 const Actions = {
-	edit: 'Bulk Edit',
 	delete: 'Bulk Delete'
 };
 
+type BulkSelectFields = {
+	'bulk-action': keyof typeof Actions | '';
+	products: string[];
+};
+
 const Page = () => {
-	const { openModal } = useProduct();
+	const { openModal, products } = useProduct();
 	const [toggleBulkSelect, setToggleBulkSelect] =
 		React.useState<boolean>(false);
 
-	const methods = useForm({
+	const methods = useForm<BulkSelectFields>({
 		defaultValues: {
 			'bulk-action': '',
 			products: []
@@ -29,8 +31,14 @@ const Page = () => {
 		mode: 'onChange'
 	});
 
-	const submitBulkAction = (data) => {
-		console.log(data);
+	const submitBulkAction = (data: BulkSelectFields) => {
+		if (data['bulk-action'] === 'delete') {
+			const requests: Promise<void>[] = [];
+
+			data.products.forEach((id) => {
+				requests.push(API.deleteProduct(id, products));
+			});
+		}
 	};
 
 	const selectedProducts = methods.watch('products');
@@ -95,140 +103,29 @@ const Page = () => {
 				)}
 
 				<section className="mt-8">
-					<ProductGroup
-						name="products"
-						title="Fritters"
-						toggleBulkSelect={toggleBulkSelect}
-						products={[
-							{
-								id: '113123',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '21',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '112',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							}
-						]}
-					/>
-					<ProductGroup
-						name="products"
-						title="Drinks"
-						toggleBulkSelect={toggleBulkSelect}
-						products={[
-							{
-								id: '113',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '22',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '23',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '14',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '24',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '15',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '2245',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '1567',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							},
-							{
-								id: '26',
-								image: 'https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e934e80364e/Menu_Fries_500x500_FriesMedium-500.jpg',
-								name: 'Fries',
-								stock: 10,
-								price: 10,
-								cost: 5,
-								options: ['Medium', 'Large'],
-								currency: '₱'
-							}
-						]}
-					/>
+					{products === undefined ||
+					Object.keys(products).length === 0 ? (
+						<section className="flex flex-row items-center gap-x-2 flex-wrap">
+							<p className="subtext mt-4 font-bold">
+								You haven't added any product yet.
+								<span
+									className="underline cursor-pointer ms-1"
+									onClick={() => openModal('')}>
+									Create your first product.
+								</span>
+							</p>
+						</section>
+					) : (
+						Object.keys(products).map((category) => (
+							<ProductGroup
+								key={category}
+								name="products"
+								title={category}
+								toggleBulkSelect={toggleBulkSelect}
+								products={products[category]}
+							/>
+						))
+					)}
 				</section>
 			</FormProvider>
 		</PageContainer>

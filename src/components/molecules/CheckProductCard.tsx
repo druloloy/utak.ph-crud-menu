@@ -4,6 +4,7 @@ import useProduct from 'hooks/useProduct';
 import React, { useEffect } from 'react';
 
 import { CheckProductCardProps } from '@types';
+import API from 'services/api';
 
 const CheckProductCard: React.FC<CheckProductCardProps> = ({
 	checked,
@@ -12,7 +13,7 @@ const CheckProductCard: React.FC<CheckProductCardProps> = ({
 	...props
 }) => {
 	const [toggle, setToggle] = React.useState<boolean>(false);
-	const { openModal } = useProduct();
+	const { openModal, products } = useProduct();
 
 	useEffect(() => {
 		// unchecl when checked is false
@@ -56,7 +57,8 @@ const CheckProductCard: React.FC<CheckProductCardProps> = ({
 				</button>
 				<button
 					onClick={() => {
-						console.log('delete');
+						if (!props?.id) return;
+						API.deleteProduct(props.id, products);
 					}}>
 					<Icon
 						className="hover:text-black/75 duration-300 transition-all"

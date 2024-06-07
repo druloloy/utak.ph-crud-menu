@@ -14,10 +14,10 @@ const Throbber: React.FC<{
 	return (
 		<section
 			role="status"
-			className={`${sizes[size]} flex flex-col justify-center items-center`}>
+			className={`flex flex-col justify-center items-center`}>
 			<svg
 				aria-hidden="true"
-				className={`w- text-primary-200 animate-spin fill-primary-500`}
+				className={`${sizes[size]} text-primary-200 animate-spin fill-primary-500`}
 				viewBox="0 0 100 101"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg">
