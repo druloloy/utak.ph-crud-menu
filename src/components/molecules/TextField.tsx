@@ -1,15 +1,9 @@
 import React from 'react';
-import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import BaseInput from '@atoms/BaseInput';
-import { InputType } from 'types';
+import { TextFieldProps } from '@types';
 import FieldLabel from '@atoms/FieldLabel';
 import FieldError from '@atoms/FieldError';
-
-type TextFieldProps = {
-	name: string;
-	rules: Record<string, RegisterOptions>;
-	required?: boolean;
-} & InputType;
 
 const TextField: React.FC<TextFieldProps> = ({
 	name,

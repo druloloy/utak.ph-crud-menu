@@ -1,19 +1,9 @@
 import { Input } from '@mui/base';
 import React from 'react';
-import { ControllerRenderProps, FieldValues } from 'react-hook-form';
+import { BaseImageInputProps } from '@types';
 
 const BaseImageInput = React.forwardRef(function CustomInput(
-	props: React.HTMLAttributes<HTMLDivElement> & {
-		inputRef: React.MutableRefObject<HTMLInputElement | null>;
-		handleFileDragAndDrop: (event: React.DragEvent) => void;
-		handleClick: () => void;
-		handleDragOver: (event: React.DragEvent) => void;
-		handleDragLeave: (event: React.DragEvent) => void;
-		handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-		fields: ControllerRenderProps<FieldValues, string>;
-		dragStyle: string;
-		placeholder?: React.ReactNode;
-	},
+	props: BaseImageInputProps & React.HTMLAttributes<HTMLDivElement>,
 	ref: React.ForwardedRef<HTMLDivElement>
 ) {
 	const {

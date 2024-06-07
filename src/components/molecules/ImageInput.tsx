@@ -1,18 +1,13 @@
 import clsx from 'clsx';
 import React from 'react';
-import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import Icon from '@atoms/Icon';
 import Throbber from '@atoms/Throbber';
 import FieldError from '@atoms/FieldError';
 import ImagePreview from '@atoms/ImagePreview';
 import Button from '@atoms/Button';
 import BaseImageInput from '@atoms/BaseImageInput';
-
-interface ImageInputProps {
-	rules: Record<string, RegisterOptions>;
-	name: string;
-	showPreview?: boolean;
-}
+import { ImageInputProps } from '@types';
 
 const ImageInput: React.FC<ImageInputProps> = ({
 	rules,
@@ -116,7 +111,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
 				render={({ field }) =>
 					imageBase64 ? (
 						<Button
-							className="py-2"
+							className="py-2 mt-4"
 							buttonStyle="secondary"
 							onClick={clearImage}>
 							<Icon
@@ -147,7 +142,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
 										/>
 										<p
 											role="status"
-											className="caption text-black">
+											className="caption text-black text-center">
 											Drop the photo or click to select
 											one.
 										</p>

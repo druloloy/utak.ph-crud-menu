@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import SideNavItem from '@molecules/SideNavItem';
-import { SideNavItemProps } from 'types';
+import { SideNavItemProps } from '@types';
 import Icon from '@atoms/Icon';
 
 type NavigationItems = Array<

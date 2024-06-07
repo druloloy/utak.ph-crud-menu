@@ -1,10 +1,5 @@
 import React from 'react';
 
-type Props = {
-	src: string;
-	size?: number;
-};
-
 const imageSize: { [key: number]: string } = {
 	8: 'w-8 h-8',
 	12: 'w-12 h-12',
@@ -14,10 +9,12 @@ const imageSize: { [key: number]: string } = {
 	32: 'w-32 h-32'
 };
 
-const Avatar: React.FC<Props & React.HTMLAttributes<HTMLDivElement>> = ({
-	src,
-	size = 24
-}) => {
+const Avatar: React.FC<
+	{
+		src: string;
+		size?: number;
+	} & React.HTMLAttributes<HTMLDivElement>
+> = ({ src, size = 24 }) => {
 	return (
 		<section
 			className={`${imageSize[size]} rounded-full overflow-hidden border border-secondary-500`}>

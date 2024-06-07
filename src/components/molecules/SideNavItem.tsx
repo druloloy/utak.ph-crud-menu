@@ -1,6 +1,6 @@
 import Icon, { IconTypes } from '@atoms/Icon';
 import React from 'react';
-import { ColorsType, SideNavItemProps } from 'types';
+import { ColorsType, SideNavItemProps } from '@types';
 
 const textColor: Record<ColorsType, string> = {
 	'primary-50': 'text-primary-50',

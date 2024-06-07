@@ -1,10 +1,5 @@
 import React from 'react';
 
-interface ThrobberProps {
-	size: number;
-	text?: string;
-}
-
 const sizes: { [key: number]: string } = {
 	8: 'w-8 h-8',
 	16: 'w-16 h-16',
@@ -12,7 +7,10 @@ const sizes: { [key: number]: string } = {
 	32: 'w-32 h-32'
 };
 
-const Throbber: React.FC<ThrobberProps> = ({ text, size }) => {
+const Throbber: React.FC<{
+	size: number;
+	text?: string;
+}> = ({ text, size }) => {
 	return (
 		<section
 			role="status"
