@@ -146,3 +146,5 @@ export type ProductGroupProps = {
 	products: ProductItemType[];
 	toggleBulkSelect?: boolean;
 };
+
+export type DeviceType = 'mobile' | 'tablet' | 'desktop';

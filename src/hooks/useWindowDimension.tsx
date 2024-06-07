@@ -1,3 +1,4 @@
+import { DeviceType } from '@types';
 import React from 'react';
 
 interface WindowDimensionsProps {

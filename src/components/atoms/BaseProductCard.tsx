@@ -12,6 +12,7 @@ const BaseProductCard: React.FC<ProductCardProps> = ({
 	selected,
 	currency
 }) => {
+	console.log(name, options);
 	return (
 		<section
 			className={`grid grid-row-6 max-w-80 w-full shadow-lg rounded-xl pb-4 ${selected ? 'border-4 border-secondary-500 shadow-none' : ''}`}>
@@ -28,15 +29,13 @@ const BaseProductCard: React.FC<ProductCardProps> = ({
 				<section className="flex flex-col">
 					<h3 className="h3 font-bold line-clamp-2">{name}</h3>
 					<section className="w-full flex flex-row items-center gap-2 flex-wrap">
-						{Array.isArray(options) && options?.length > 0 ? (
+						{Array.isArray(options) &&
+							options?.length > 0 &&
 							options?.map((option, index) => (
 								<Pill key={index} color="primary-500">
 									{option}
 								</Pill>
-							))
-						) : (
-							<Pill color="primary-500">{options}</Pill>
-						)}
+							))}
 					</section>
 				</section>
 

@@ -3,7 +3,6 @@ import {
 	getDatabase,
 	ref as dbRef,
 	set,
-	onValue,
 	update,
 	get
 } from '@firebase/database';
