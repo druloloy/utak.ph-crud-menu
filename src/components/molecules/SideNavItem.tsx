@@ -1,4 +1,4 @@
-import Icon, { IconTypes } from '@atoms/Icon';
+import Icon from '@atoms/Icon';
 import React from 'react';
 import { ColorsType, SideNavItemProps } from '@types';
 
