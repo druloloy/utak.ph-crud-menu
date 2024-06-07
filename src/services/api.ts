@@ -63,25 +63,31 @@ const API = {
 		data: ProductItemType,
 		products?: Record<string, ProductItemType[]>
 	) => {
-		await Database.writeData<ProductItemType>(data, 'menu_items');
-		addItemToMenu(data, products);
-		return true;
+		return await Database.writeData<ProductItemType>(
+			data,
+			'menu_items'
+		).then(() => {
+			return addItemToMenu(data, products);
+		});
 	},
 	updateProduct: async (
 		data: ProductItemType,
 		products?: Record<string, ProductItemType[]>
 	) => {
-		await Database.updateData<ProductItemType>(data, 'menu_items');
-		updateItemInMenu(data, products);
-		return true;
+		return await Database.updateData<ProductItemType>(
+			data,
+			'menu_items'
+		).then(() => {
+			return updateItemInMenu(data, products);
+		});
 	},
 	deleteProduct: async (
 		id: string,
 		products?: Record<string, ProductItemType[]>
 	) => {
-		await Database.deleteData('menu_items', id).then(() => {
+		return await Database.deleteData('menu_items', id).then(() => {
 			Storage.deleteImage('products', id);
-			removeItemById(id, products);
+			return removeItemById(id, products);
 		});
 	},
 	getProductsByCategory: async (category: string) => {

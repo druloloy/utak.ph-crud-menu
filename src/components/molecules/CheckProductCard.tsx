@@ -13,7 +13,7 @@ const CheckProductCard: React.FC<CheckProductCardProps> = ({
 	...props
 }) => {
 	const [toggle, setToggle] = React.useState<boolean>(false);
-	const { openModal, products } = useProduct();
+	const { openModal, products, setProducts } = useProduct();
 
 	useEffect(() => {
 		// unchecl when checked is false
@@ -58,7 +58,9 @@ const CheckProductCard: React.FC<CheckProductCardProps> = ({
 				<button
 					onClick={() => {
 						if (!props?.id) return;
-						API.deleteProduct(props.id, products);
+						API.deleteProduct(props.id, products).then(
+							(newProducts) => setProducts(newProducts)
+						);
 					}}>
 					<Icon
 						className="hover:text-black/75 duration-300 transition-all"

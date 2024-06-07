@@ -19,7 +19,7 @@ type BulkSelectFields = {
 };
 
 const Page = () => {
-	const { openModal, products } = useProduct();
+	const { openModal, products, setProducts } = useProduct();
 	const [toggleBulkSelect, setToggleBulkSelect] =
 		React.useState<boolean>(false);
 
@@ -36,7 +36,11 @@ const Page = () => {
 			const requests: Promise<void>[] = [];
 
 			data.products.forEach((id) => {
-				requests.push(API.deleteProduct(id, products));
+				requests.push(
+					API.deleteProduct(id, products).then((newProducts) =>
+						setProducts(newProducts)
+					)
+				);
 			});
 		}
 	};
