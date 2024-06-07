@@ -27,7 +27,7 @@ type MenuModalFormType = {
 };
 
 const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
-	const { products } = useProduct();
+	const { products, setProducts } = useProduct();
 
 	const { imageData } = useFetchImageData(item?.thumbnail || '');
 	const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
@@ -111,9 +111,13 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 				};
 
 				if (item?.id) {
-					API.updateProduct(newItem, products);
+					API.updateProduct(newItem, products).then((newProducts) =>
+						setProducts(newProducts)
+					);
 				} else {
-					API.createProduct(newItem, products);
+					API.createProduct(newItem, products).then((newProducts) =>
+						setProducts(newProducts)
+					);
 				}
 			});
 
