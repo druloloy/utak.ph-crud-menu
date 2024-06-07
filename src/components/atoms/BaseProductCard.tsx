@@ -3,9 +3,9 @@ import React from 'react';
 import { ProductCardProps } from '@types';
 
 const BaseProductCard: React.FC<ProductCardProps> = ({
-	image,
+	thumbnail,
 	name,
-	stock,
+	stocks,
 	price,
 	cost,
 	options,
@@ -18,7 +18,7 @@ const BaseProductCard: React.FC<ProductCardProps> = ({
 			<section
 				className={`row-span-4 w-full aspect-square overflow-hidden rounded-lg`}>
 				<img
-					src={image}
+					src={thumbnail}
 					alt={name}
 					className="w-full h-full object-cover group-hover:scale-125 duration-1000 transition-all"
 				/>
@@ -28,11 +28,15 @@ const BaseProductCard: React.FC<ProductCardProps> = ({
 				<section className="flex flex-col">
 					<h3 className="h3 font-bold line-clamp-2">{name}</h3>
 					<section className="w-full flex flex-row items-center gap-2 flex-wrap">
-						{options?.map((option, index) => (
-							<Pill key={index} color="primary-500">
-								{option}
-							</Pill>
-						))}
+						{Array.isArray(options) && options?.length > 0 ? (
+							options?.map((option, index) => (
+								<Pill key={index} color="primary-500">
+									{option}
+								</Pill>
+							))
+						) : (
+							<Pill color="primary-500">{options}</Pill>
+						)}
 					</section>
 				</section>
 
@@ -49,7 +53,7 @@ const BaseProductCard: React.FC<ProductCardProps> = ({
 					</section>
 
 					<section className="">
-						<p className="caption font-bold">Stock: {stock}</p>
+						<p className="caption font-bold">Stock: {stocks}</p>
 					</section>
 				</section>
 			</section>

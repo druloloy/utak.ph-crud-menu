@@ -14,9 +14,9 @@ const MainNavigationItems: NavigationItems = [
 		iconName: 'MdDashboard'
 	},
 	{
-		to: '/products',
-		title: 'Products',
-		iconName: 'MdShoppingBag',
+		to: '/menu',
+		title: 'Menu',
+		iconName: 'MdFastfood',
 		isActive: true
 	},
 	{

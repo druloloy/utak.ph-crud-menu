@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { animated, config, useTransition } from '@react-spring/web';
 import Icon from '@atoms/Icon';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -8,20 +8,63 @@ import OptionInput from '@molecules/OptionInput';
 import Button from '@atoms/Button';
 import ImageInput from '@molecules/ImageInput';
 import { MenuModalProps } from '@types';
+import API from 'services/api';
+import { v4 as uuid } from 'uuid';
+import Throbber from '@atoms/Throbber';
+import ResultModal from '@molecules/ResultModal';
+import useFetchImageData from 'hooks/useFetchImageData';
+import useProduct from 'hooks/useProduct';
+
+type MenuModalFormType = {
+	name: string;
+	category: string;
+	thumbnail: string;
+	'options-input': string;
+	options: string[];
+	price: string | number;
+	cost: string | number;
+	stocks: string | number;
+};
 
 const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
-	const methods = useForm({
+	const { products } = useProduct();
+
+	const { imageData } = useFetchImageData(item?.thumbnail || '');
+	const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
+	const [showResultModal, setShowResultModal] = React.useState<{
+		result: 'success' | 'error';
+		open: boolean;
+	}>({
+		result: 'success',
+		open: false
+	});
+	const [categories, setCategories] = React.useState<Record<string, string>>(
+		{}
+	);
+
+	const methods = useForm<MenuModalFormType>({
 		defaultValues: {
-			name: '',
-			thumbnail: '',
+			name: item?.name || '',
+			thumbnail: imageData || '',
 			'options-input': '',
-			options: [],
-			price: '',
-			cost: '',
-			stocks: ''
+			price: item?.price || '',
+			cost: item?.cost || '',
+			stocks: item?.stocks || ''
 		},
 		mode: 'onChange'
 	});
+
+	useEffect(() => {
+		if (item && imageData) {
+			methods.setValue('thumbnail', imageData);
+		}
+	}, [item, methods, imageData]);
+
+	useEffect(() => {
+		API.getCategories().then((data) => {
+			setCategories(data as Record<string, string>);
+		});
+	}, []);
 
 	const transitions = useTransition(open, {
 		from: { opacity: 0, scale: 0.5 },
@@ -31,10 +74,16 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 		config: config.gentle
 	});
 
-	const onsubmit = (data: any) => console.log(data);
-
 	const clearFields = () => {
-		methods.reset();
+		methods.reset({
+			'options-input': '',
+			name: '',
+			category: '',
+			thumbnail: '',
+			price: '',
+			cost: '',
+			stocks: ''
+		});
 	};
 
 	const _closeModal = () => {
@@ -42,11 +91,50 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 		clearFields();
 	};
 
+	const onsubmit = (data: MenuModalFormType) => {
+		try {
+			setIsSubmitting(true);
+			const productId = item?.id || uuid();
+			API.uploadImage(data?.thumbnail, productId).then((url) => {
+				const newItem = {
+					id: productId,
+					thumbnail: url,
+					category: categories[data.category],
+					name: data.name,
+					price: Number(data.price),
+					cost: Number(data.cost),
+					stocks: Number(data.stocks),
+					options: data.options.join(','),
+					categorySlug: data.category,
+					createdAt: new Date().getTime(),
+					updatedAt: new Date().getTime()
+				};
+
+				if (item?.id) {
+					API.updateProduct(newItem, products);
+				} else {
+					API.createProduct(newItem, products);
+				}
+			});
+
+			setShowResultModal({
+				result: 'success',
+				open: true
+			});
+		} catch (error) {
+			setShowResultModal({
+				result: 'error',
+				open: true
+			});
+		}
+		setIsSubmitting(false);
+	};
+
 	return (
 		open && (
 			<section className="w-screen h-screen bg-black/50 fixed top-0 left-0 flex justify-center items-center z-20">
-				{transitions((style, item) =>
-					item ? (
+				{transitions((style, _item) =>
+					_item ? (
 						<FormProvider {...methods}>
 							<animated.section
 								style={style}
@@ -68,11 +156,11 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 									<section className="w-full flex flex-col gap-4">
 										<section>
 											<h2 className="h2 font-bold">
-												Update Menu Item
+												Manage Menu
 											</h2>
 											<p className="subtext">
-												Add or edit a new menu item to
-												your store
+												Add or edit a menu item to your
+												store.
 											</p>
 										</section>
 
@@ -97,11 +185,10 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 															required: true
 														}
 													}}
-													options={{
-														fritters: 'Fritters',
-														drinks: 'Drinks',
-														sides: 'Sides'
-													}}
+													defaultValue={
+														item?.categorySlug
+													}
+													options={categories}
 													placeholder="Choose menu category."
 													required
 												/>
@@ -114,11 +201,11 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 															required: false
 														}
 													}}
-													options={[
-														'Small',
-														'Medium',
-														'Large'
-													]}
+													options={(
+														item?.options as string
+													)
+														?.split(',')
+														.filter(Boolean)}
 													placeholder="Add option name (e.g. Small)"
 												/>
 
@@ -159,11 +246,15 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 													required
 												/>
 												<section className="flex flex-row items-center gap-2 mt-8 pb-8">
-													<Button
-														buttonStyle="primary"
-														type="submit">
-														Save Item
-													</Button>
+													{isSubmitting ? (
+														<Throbber size={16} />
+													) : (
+														<Button
+															buttonStyle="primary"
+															type="submit">
+															Save Item
+														</Button>
+													)}
 													<Button
 														buttonStyle="secondary"
 														type="button"
@@ -179,6 +270,9 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 															Thumbnail*
 														</p>
 														<ImageInput
+															defaultValue={
+																imageData
+															}
 															name="thumbnail"
 															rules={{
 																thumbnail: {
@@ -198,9 +292,27 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 						</FormProvider>
 					) : null
 				)}
+				<ResultModal
+					message={
+						showResultModal.result === 'success'
+							? 'Success!'
+							: 'Failed!'
+					}
+					type={showResultModal.result}
+					close={() =>
+						setShowResultModal({
+							open: false,
+							result: showResultModal.result
+						})
+					}
+					open={showResultModal.open}
+				/>
 			</section>
 		)
 	);
 };
 
+const MemoizedMenuModal = React.memo(MenuModal);
+
+export { MemoizedMenuModal };
 export default MenuModal;

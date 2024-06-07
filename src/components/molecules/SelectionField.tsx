@@ -4,7 +4,7 @@ import FieldLabel from '@atoms/FieldLabel';
 import SelectionButton from '@atoms/SelectionButton';
 import SelectionOption from '@atoms/SelectionOption';
 import { prepareForSlot } from '@mui/base';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { SelectionFieldProps } from '@types';
 
@@ -34,11 +34,17 @@ const SelectionField: React.FC<SelectionFieldProps> = ({
 		}
 		return entries;
 	}, [options]);
+
 	const {
 		control,
 		setValue,
 		formState: { errors }
 	} = useFormContext();
+
+	useEffect(() => {
+		console.log('defaultValue', defaultValue);
+		setValue(name, defaultValue);
+	}, [defaultValue, name, setValue]);
 
 	return (
 		<section className="flex flex-col text-left">
@@ -46,14 +52,18 @@ const SelectionField: React.FC<SelectionFieldProps> = ({
 				name={name}
 				control={control}
 				rules={rules}
-				render={({ field: { name, ref, value } }) => (
+				render={({ field: { name, ref } }) => (
 					<section className="flex flex-col text-left">
 						<FieldLabel text={label} required={required} />
 						<BaseSelect
 							component={ButtonSlot}
 							ref={ref}
 							name={name}
-							defaultValue={defaultValue || value || ''}
+							defaultValue={
+								optionsArray.find(
+									(pair) => pair[0] === defaultValue
+								)?.[1] || ''
+							}
 							onChange={(event) => {
 								const matchedPair = optionsArray.find(
 									(pair) =>

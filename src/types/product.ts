@@ -6,7 +6,10 @@ export type ProductItemType = {
 	price: number;
 	cost: number;
 	stocks: number;
-	options?: string;
+	categorySlug?: string;
+	options?: string | string[];
+	updatedAt?: number | Date;
+	createdAt?: number | Date;
 };
 
 export type ProductCategoryType = {

@@ -46,7 +46,7 @@ const OptionInput: React.FC<OptionInputProps> = ({
 	});
 
 	useEffect(() => {
-		if (options) {
+		if (options && options.length > 0) {
 			append(options);
 			setValue(inputName, '');
 		}
@@ -90,12 +90,16 @@ const OptionInput: React.FC<OptionInputProps> = ({
 									type="text"
 									placeholder={placeholder}
 									TrailingIcon={
-										<Icon
-											name="MdAdd"
-											size={24}
-											color="primary-400"
-											onClick={addItem}
-										/>
+										<span
+											className="cursor-pointer flex flex-row items-center justify-center text-sm font-bold text-primary-400"
+											onClick={addItem}>
+											<Icon
+												name="MdAdd"
+												size={18}
+												color="primary-400"
+											/>
+											Insert
+										</span>
 									}
 								/>
 								<FieldError
@@ -104,14 +108,15 @@ const OptionInput: React.FC<OptionInputProps> = ({
 							</section>
 
 							<section className="flex flex-row flex-wrap gap-2">
-								{fields.map((field, index) => (
-									<MemoizedOptionItem
-										key={field.id}
-										name={`${name}.${index}`}
-										removeItem={() => removeItem(index)}
-										getValues={getValues}
-									/>
-								))}
+								{fields.length > 0 &&
+									fields.map((field, index) => (
+										<MemoizedOptionItem
+											key={field.id}
+											name={`${name}.${index}`}
+											removeItem={() => removeItem(index)}
+											getValues={getValues}
+										/>
+									))}
 							</section>
 						</section>
 					);
