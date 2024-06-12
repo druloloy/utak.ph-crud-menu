@@ -16,8 +16,8 @@ import {
 } from '@firebase/storage';
 import { ProductItemType } from '@types';
 
-type StoragePath = 'thumbnails' | 'products';
-type DatabasePath = 'menu_items' | 'categories';
+export type StoragePath = 'thumbnails' | 'products' | 'staging_products';
+export type DatabasePath = 'menu_items' | 'categories' | 'staging_menu_items';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

@@ -3,11 +3,17 @@ export type ProductItemType = {
 	category: string;
 	name: string;
 	thumbnail: string;
-	price: number;
-	cost: number;
-	stocks: number;
+	price?: number | null;
+	cost?: number | null;
+	stocks?: number | null;
 	categorySlug?: string;
-	options?: string | string[];
+	options?: {
+		[key: string]: {
+			price: number | string;
+			cost: number | string;
+			stocks: number | string;
+		};
+	} | null;
 	updatedAt?: number | Date;
 	createdAt?: number | Date;
 };

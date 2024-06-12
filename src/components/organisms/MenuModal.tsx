@@ -7,20 +7,31 @@ import SelectionField from '@molecules/SelectionField';
 import OptionInput from '@molecules/OptionInput';
 import Button from '@atoms/Button';
 import ImageInput from '@molecules/ImageInput';
-import { MenuModalProps } from '@types';
+import { MenuModalProps, ProductItemType } from '@types';
 import API from 'services/api';
 import { v4 as uuid } from 'uuid';
 import Throbber from '@atoms/Throbber';
 import ResultModal from '@molecules/ResultModal';
 import useFetchImageData from 'hooks/useFetchImageData';
 import useProduct from 'hooks/useProduct';
+import SwitchInput from '@molecules/SwitchInput';
 
 type MenuModalFormType = {
 	name: string;
 	category: string;
 	thumbnail: string;
-	'options-input': string;
-	options: string[];
+	addOptions: boolean;
+	optionsInput: string;
+	optionsInputPrice: string;
+	optionsInputCost: string;
+	optionsInputStocks: string;
+	options: {
+		[key: string]: {
+			price: number | string;
+			cost: number | string;
+			stocks: number | string;
+		};
+	}[];
 	price: string | number;
 	cost: string | number;
 	stocks: string | number;
@@ -28,7 +39,9 @@ type MenuModalFormType = {
 
 const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 	const { products, setProducts } = useProduct();
-
+	const [showOptions, setShowOptions] = React.useState<boolean>(
+		item ? Object.keys(item.options || {}).length > 0 : false
+	);
 	const { imageData } = useFetchImageData(item?.thumbnail || '');
 	const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
 	const [showResultModal, setShowResultModal] = React.useState<{
@@ -46,7 +59,13 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 		defaultValues: {
 			name: item?.name || '',
 			thumbnail: imageData || '',
-			'options-input': '',
+			addOptions: item
+				? Object.keys(item.options || {}).length > 0
+				: false,
+			optionsInput: '',
+			optionsInputPrice: '',
+			optionsInputCost: '',
+			optionsInputStocks: '',
 			price: item?.price || '',
 			cost: item?.cost || '',
 			stocks: item?.stocks || ''
@@ -76,7 +95,11 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 
 	const clearFields = () => {
 		methods.reset({
-			'options-input': '',
+			optionsInput: '',
+			optionsInputPrice: '',
+			optionsInputCost: '',
+			optionsInputStocks: '',
+			options: [],
 			name: '',
 			category: '',
 			thumbnail: '',
@@ -96,19 +119,26 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 			setIsSubmitting(true);
 			const productId = item?.id || uuid();
 			API.uploadImage(data?.thumbnail, productId).then((url) => {
-				const newItem = {
+				const optionsExists = data.options?.length > 0;
+				console.log(optionsExists, data.options);
+
+				const newItem: ProductItemType = {
 					id: productId,
 					thumbnail: url,
 					category: categories[data.category],
 					name: data.name,
-					price: Number(data.price),
-					cost: Number(data.cost),
-					stocks: Number(data.stocks),
-					options: data.options.join(','),
+					options:
+						(optionsExists && Object.assign({}, ...data.options)) ||
+						null,
 					categorySlug: data.category,
+					price: !optionsExists ? Number(data.price) : null,
+					cost: !optionsExists ? Number(data.cost) : null,
+					stocks: !optionsExists ? Number(data.stocks) : null,
 					createdAt: new Date().getTime(),
 					updatedAt: new Date().getTime()
 				};
+
+				console.log(newItem);
 
 				if (item?.id) {
 					API.updateProduct(newItem, products).then((newProducts) =>
@@ -197,58 +227,89 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 													required
 												/>
 
-												<OptionInput
-													name="options"
-													label="Options"
+												<SwitchInput
+													name="addOptions"
+													label="Add Options"
 													rules={{
-														options: {
+														'add-options': {
 															required: false
 														}
 													}}
-													options={(
-														item?.options as string
-													)
-														?.split(',')
-														.filter(Boolean)}
-													placeholder="Add option name (e.g. Small)"
+													onChange={(value) => {
+														setShowOptions(value);
+													}}
 												/>
 
-												<TextField
-													type="number"
-													name="price"
-													rules={{
-														price: {
-															required: true
-														}
-													}}
-													label="Price"
-													placeholder="Enter sale price."
-													required
-												/>
+												{showOptions && (
+													<OptionInput
+														name="options"
+														inputOptionPlaceholder="Add option name (e.g. Small)"
+														inputPricePlaceholder="0.00"
+														inputCostPlaceholder="0.00"
+														inputStocksPlaceholder="0"
+														inputOptionLabel="Option Name"
+														inputPriceLabel="Price"
+														inputCostLabel="Cost"
+														inputStocksLabel="Stocks"
+														rules={{
+															options: {
+																required: false
+															}
+														}}
+														options={Object.keys(
+															item?.options || {}
+														).map((key) => ({
+															[key]: (item?.options ||
+																{})[key]
+														}))}
+													/>
+												)}
 
-												<TextField
-													type="number"
-													name="cost"
-													rules={{
-														cost: { required: true }
-													}}
-													label="Cost"
-													placeholder="Enter original cost."
-													required
-												/>
+												{!showOptions && (
+													<>
+														<TextField
+															type="number"
+															name="price"
+															rules={{
+																price: {
+																	required:
+																		true
+																}
+															}}
+															label="Price"
+															placeholder="Enter sale price."
+															required
+														/>
 
-												<TextField
-													type="number"
-													name="stocks"
-													rules={{
-														stocks: {
-															required: true
-														}
-													}}
-													label="Stocks"
-													placeholder="Enter Remaining stocks."
-													required
-												/>
+														<TextField
+															type="number"
+															name="cost"
+															rules={{
+																cost: {
+																	required:
+																		true
+																}
+															}}
+															label="Cost"
+															placeholder="Enter original cost."
+															required
+														/>
+
+														<TextField
+															type="number"
+															name="stocks"
+															rules={{
+																stocks: {
+																	required:
+																		true
+																}
+															}}
+															label="Stocks"
+															placeholder="Enter Remaining stocks."
+															required
+														/>
+													</>
+												)}
 												<section className="flex flex-row items-center gap-2 mt-8 pb-8">
 													{isSubmitting ? (
 														<Throbber size={16} />
