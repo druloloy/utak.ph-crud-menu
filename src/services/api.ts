@@ -1,5 +1,9 @@
 import { ProductItemType } from '@types';
-import { Database, Storage } from './firebase';
+import { Database, DatabasePath, Storage, StoragePath } from './firebase';
+
+const __DEV__ = import.meta.env.DEV;
+const dbPath: DatabasePath = __DEV__ ? 'staging_menu_items' : 'menu_items';
+const storagePath: StoragePath = __DEV__ ? 'staging_products' : 'products';
 
 function addItemToMenu(
 	item: ProductItemType,
@@ -44,17 +48,12 @@ function removeItemById(
 
 const API = {
 	getProduct: async (id: string) => {
-		const response = await Database.readData<ProductItemType>(
-			'menu_items',
-			id
-		);
+		const response = await Database.readData<ProductItemType>(dbPath, id);
 		return response;
 	},
 	getAllProducts: async () => {
 		const response =
-			await Database.readAllData<Record<string, ProductItemType>>(
-				'menu_items'
-			);
+			await Database.readAllData<Record<string, ProductItemType>>(dbPath);
 
 		if (!response) {
 			return [];
@@ -67,38 +66,34 @@ const API = {
 		data: ProductItemType,
 		products?: Record<string, ProductItemType[]>
 	) => {
-		return await Database.writeData<ProductItemType>(
-			data,
-			'menu_items'
-		).then(() => {
-			return addItemToMenu(data, products);
-		});
+		return await Database.writeData<ProductItemType>(data, dbPath).then(
+			() => {
+				return addItemToMenu(data, products);
+			}
+		);
 	},
 	updateProduct: async (
 		data: ProductItemType,
 		products?: Record<string, ProductItemType[]>
 	) => {
-		return await Database.updateData<ProductItemType>(
-			data,
-			'menu_items'
-		).then(() => {
-			return updateItemInMenu(data, products);
-		});
+		return await Database.updateData<ProductItemType>(data, dbPath).then(
+			() => {
+				return updateItemInMenu(data, products);
+			}
+		);
 	},
 	deleteProduct: async (
 		id: string,
 		products?: Record<string, ProductItemType[]>
 	) => {
-		return await Database.deleteData('menu_items', id).then(() => {
-			Storage.deleteImage('products', id);
+		return await Database.deleteData(dbPath, id).then(() => {
+			Storage.deleteImage(storagePath, id);
 			return removeItemById(id, products);
 		});
 	},
 	getProductsByCategory: async (category: string) => {
 		const response =
-			await Database.readAllData<Record<string, ProductItemType>>(
-				'menu_items'
-			);
+			await Database.readAllData<Record<string, ProductItemType>>(dbPath);
 
 		if (!response) {
 			return [];
@@ -113,7 +108,11 @@ const API = {
 		return response;
 	},
 	uploadImage: async (imageStr: string, fileId: string) => {
-		const response = await Storage.uploadFile(imageStr, 'products', fileId);
+		const response = await Storage.uploadFile(
+			imageStr,
+			storagePath,
+			fileId
+		);
 		return await Storage.getImageUrl(response.ref);
 	}
 };

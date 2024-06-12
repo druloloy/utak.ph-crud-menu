@@ -51,9 +51,7 @@ const ProductGroup: React.FC<ProductGroupProps> = ({
 									fields={field}
 									checked={!!toggleBulkSelect}
 									{...product}
-									options={(product?.options as string)
-										?.split(',')
-										.filter(Boolean)}
+									options={product?.options}
 									currency="₱"
 								/>
 							</li>

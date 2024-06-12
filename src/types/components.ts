@@ -5,7 +5,6 @@ import {
 	ControllerRenderProps,
 	FieldValues,
 	RegisterOptions,
-	UseFormGetValues,
 	UseFormSetValue
 } from 'react-hook-form';
 import { ProductItemType } from './product';
@@ -67,11 +66,17 @@ export type SideNavItemProps = {
 export type ProductCardProps = {
 	thumbnail: string;
 	name: string;
-	stocks: number;
-	price: number;
-	cost: number;
 	currency: string;
-	options?: Array<string>;
+	options?: {
+		[key: string]: {
+			price: number | string;
+			cost: number | string;
+			stocks: number | string;
+		};
+	} | null;
+	stocks?: number | null;
+	price?: number | null;
+	cost?: number | null;
 	selected?: boolean;
 };
 
@@ -91,16 +96,45 @@ export type ImageInputProps = {
 export type OptionInputProps = {
 	name: string;
 	rules: Record<string, RegisterOptions>;
-	placeholder?: string;
-	label?: string;
+	inputOptionPlaceholder?: string;
+	inputPricePlaceholder?: string;
+	inputCostPlaceholder?: string;
+	inputStocksPlaceholder?: string;
+	inputOptionLabel?: string;
+	inputPriceLabel?: string;
+	inputCostLabel?: string;
+	inputStocksLabel?: string;
 	required?: boolean;
-	options?: string[];
+	options?: {
+		[key: string]: {
+			price: number | string;
+			cost: number | string;
+			stocks: number | string;
+		};
+	}[];
 };
 
 export type OptionItemProps = {
 	name: string;
-	removeItem: () => void;
-	getValues: UseFormGetValues<FieldValues>;
+	price: number | string;
+	cost: number | string;
+	stocks: number | string;
+	removeItem?: () => void;
+	currency?: string;
+	onClick?: ({
+		name,
+		price,
+		cost,
+		stocks,
+		index
+	}: {
+		name: string;
+		price: number | string;
+		cost: number | string;
+		stocks: number | string;
+		index?: number;
+	}) => void;
+	index?: number;
 };
 
 export type SelectionFieldProps = {

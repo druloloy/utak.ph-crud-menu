@@ -1,36 +1,34 @@
 import Icon from '@atoms/Icon';
-import Pill from '@atoms/Pill';
 import React, { useCallback, useEffect } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import BaseInput from '@atoms/BaseInput';
 import FieldLabel from '@atoms/FieldLabel';
 import FieldError from '@atoms/FieldError';
-import { OptionInputProps, OptionItemProps } from '@types';
-
-const OptionItem: React.FC<OptionItemProps> = ({
-	name,
-	removeItem,
-	getValues
-}) => {
-	return (
-		<Pill color="secondary-300">
-			{getValues(name)}
-			<Icon name="MdClose" color="black" size={18} onClick={removeItem} />
-		</Pill>
-	);
-};
+import { OptionInputProps } from '@types';
+import Button from '@atoms/Button';
+import OptionItem from '@atoms/OptionItem';
 
 const MemoizedOptionItem = React.memo(OptionItem);
 
 const OptionInput: React.FC<OptionInputProps> = ({
 	name,
 	rules,
-	placeholder,
-	label,
+	inputOptionPlaceholder,
+	inputPricePlaceholder,
+	inputCostPlaceholder,
+	inputStocksPlaceholder,
+	inputOptionLabel,
+	inputPriceLabel,
+	inputCostLabel,
+	inputStocksLabel,
 	required,
 	options
 }) => {
-	const inputName = `${name}-input`;
+	const inputName = `${name}Input`;
+	const inputPriceName = `${name}InputPrice`;
+	const inputCostName = `${name}InputCost`;
+	const inputStocksName = `${name}InputStocks`;
+
 	const {
 		control,
 		getValues,
@@ -54,11 +52,61 @@ const OptionInput: React.FC<OptionInputProps> = ({
 	}, []);
 
 	const addItem = useCallback(() => {
-		const value: string = getValues(inputName);
-		if (!value) return;
-		append(value.trim());
+		const optionName: string = getValues(inputName);
+		const price: number = getValues(inputPriceName);
+		const cost: number = getValues(inputCostName);
+		const stocks: number = getValues(inputStocksName);
+
+		if (!optionName || !price || !cost || !stocks) return;
+		append({
+			[optionName]: {
+				price: price,
+				cost: cost,
+				stocks: stocks
+			}
+		});
 		setValue(inputName, '');
-	}, [append, getValues, inputName, setValue]);
+		setValue(inputPriceName, '');
+		setValue(inputCostName, '');
+		setValue(inputStocksName, '');
+	}, [
+		append,
+		getValues,
+		inputName,
+		setValue,
+		inputPriceName,
+		inputCostName,
+		inputStocksName
+	]);
+
+	const onClickUpdate = ({
+		index,
+		name,
+		price,
+		cost,
+		stocks
+	}: {
+		name: string;
+		price: number | string;
+		cost: number | string;
+		stocks: number | string;
+		index?: number;
+	}) => {
+		if (
+			getValues(inputName) ||
+			getValues(inputPriceName) ||
+			getValues(inputCostName) ||
+			getValues(inputStocksName)
+		)
+			return;
+
+		setValue(inputName, name);
+		setValue(inputPriceName, price);
+		setValue(inputCostName, cost);
+		setValue(inputStocksName, stocks);
+
+		removeItem(index as number);
+	};
 
 	useEffect(() => {
 		const addItemOnEnter = (e: KeyboardEvent) => {
@@ -75,7 +123,7 @@ const OptionInput: React.FC<OptionInputProps> = ({
 	const removeItem = (index: number) => remove(index);
 
 	return (
-		<section className="flex flex-col">
+		<section className="flex flex-col gap-2">
 			<Controller
 				name={inputName}
 				rules={rules[inputName]}
@@ -84,44 +132,135 @@ const OptionInput: React.FC<OptionInputProps> = ({
 					return (
 						<section className="flex flex-col w-full gap-2">
 							<section className="flex flex-col text-left">
-								<FieldLabel text={label} required={required} />
+								<FieldLabel
+									text={inputOptionLabel}
+									required={required}
+								/>
 								<BaseInput
 									{...field}
 									type="text"
-									placeholder={placeholder}
-									TrailingIcon={
-										<span
-											className="cursor-pointer flex flex-row items-center justify-center text-sm font-bold text-primary-400"
-											onClick={addItem}>
-											<Icon
-												name="MdAdd"
-												size={18}
-												color="primary-400"
-											/>
-											Insert
-										</span>
-									}
+									placeholder={inputOptionPlaceholder}
 								/>
 								<FieldError
 									text={errors[inputName]?.message as string}
 								/>
 							</section>
-
-							<section className="flex flex-row flex-wrap gap-2">
-								{fields.length > 0 &&
-									fields.map((field, index) => (
-										<MemoizedOptionItem
-											key={field.id}
-											name={`${name}.${index}`}
-											removeItem={() => removeItem(index)}
-											getValues={getValues}
-										/>
-									))}
-							</section>
 						</section>
 					);
 				}}
 			/>
+
+			<section className="grid grid-cols-3 gap-2">
+				<Controller
+					name={inputPriceName}
+					rules={rules[inputPriceName]}
+					control={control}
+					render={({ field }) => {
+						return (
+							<section className="flex flex-col w-full gap-2">
+								<section className="flex flex-col text-left">
+									<FieldLabel
+										text={inputPriceLabel}
+										required={required}
+									/>
+									<BaseInput
+										{...field}
+										type="number"
+										placeholder={inputPricePlaceholder}
+									/>
+									<FieldError
+										text={
+											errors[inputPriceName]
+												?.message as string
+										}
+									/>
+								</section>
+							</section>
+						);
+					}}
+				/>
+				<Controller
+					name={inputCostName}
+					rules={rules[inputCostName]}
+					control={control}
+					render={({ field }) => {
+						return (
+							<section className="flex flex-col w-full gap-2">
+								<section className="flex flex-col text-left">
+									<FieldLabel
+										text={inputCostLabel}
+										required={required}
+									/>
+									<BaseInput
+										{...field}
+										type="number"
+										placeholder={inputCostPlaceholder}
+									/>
+									<FieldError
+										text={
+											errors[inputCostName]
+												?.message as string
+										}
+									/>
+								</section>
+							</section>
+						);
+					}}
+				/>
+				<Controller
+					name={inputStocksName}
+					rules={rules[inputStocksName]}
+					control={control}
+					render={({ field }) => {
+						return (
+							<section className="flex flex-col w-full gap-2">
+								<section className="flex flex-col text-left">
+									<FieldLabel
+										text={inputStocksLabel}
+										required={required}
+									/>
+									<BaseInput
+										{...field}
+										type="number"
+										placeholder={inputStocksPlaceholder}
+									/>
+									<FieldError
+										text={
+											errors[inputStocksName]
+												?.message as string
+										}
+									/>
+								</section>
+							</section>
+						);
+					}}
+				/>
+			</section>
+
+			<Button type="button" buttonStyle="secondary" onClick={addItem}>
+				<Icon name="MdAdd" size={18} color="black" /> Insert Option
+			</Button>
+			<section className="flex flex-row flex-wrap gap-2 justify-start items-start">
+				{fields.length > 0 &&
+					fields.map((field, index) => {
+						const itemName = `${name}.${index}`;
+						const optionKey = Object.keys(
+							getValues(`${name}.${index}`)
+						)[0];
+						return (
+							<MemoizedOptionItem
+								key={field.id}
+								index={index}
+								name={optionKey}
+								price={getValues(itemName)[optionKey].price}
+								cost={getValues(itemName)[optionKey].cost}
+								stocks={getValues(itemName)[optionKey].stocks}
+								removeItem={() => removeItem(index)}
+								onClick={onClickUpdate}
+							/>
+						);
+					})}
+			</section>
 		</section>
 	);
 };
