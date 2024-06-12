@@ -17,7 +17,7 @@ const OptionItem: React.FC<OptionItemProps> = ({
 			title={`
 			 Price: ${curr}${price.toLocaleString()}\nCost: ${curr}${cost.toLocaleString()}\nStocks: ${stocks}
 			`}
-			className="relative w-full min-w-1/3 flex flex-col justify-center items-center p-2 bg-primary-50 border border-primary-300 rounded-lg gap-2"
+			className="relative w-full flex flex-col justify-center items-center p-2 bg-primary-50 border border-primary-300 rounded-lg gap-2"
 			onClick={() =>
 				onClick &&
 				onClick({
@@ -41,17 +41,17 @@ const OptionItem: React.FC<OptionItemProps> = ({
 			<p className="subtext text-center font-bold">{name}</p>
 			<section className="w-full flex flex-row flex-wrap items-start justify-between gap-2">
 				<p className="caption flex flex-row items-center justify-center gap-1">
-					<Icon name="MdAttachMoney" size={16} color="black" />
+					<Icon name="MdAttachMoney" size={24} color="black" />
 					{curr}
 					{price.toLocaleString()}
 				</p>
 				<p className="caption flex flex-row items-center justify-center gap-1">
-					<Icon name="MdCurrencyExchange" size={16} color="black" />
+					<Icon name="MdCurrencyExchange" size={24} color="black" />
 					{curr}
 					{cost.toLocaleString()}
 				</p>
 				<p className="caption flex flex-row items-center justify-center gap-1">
-					<Icon name="MdStorage" size={16} color="black" /> {stocks}
+					<Icon name="MdStorage" size={24} color="black" /> {stocks}
 				</p>
 			</section>
 		</section>
