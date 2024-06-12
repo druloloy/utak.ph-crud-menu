@@ -134,17 +134,19 @@ const MenuModal: React.FC<MenuModalProps> = ({ open, closeModal, item }) => {
 					price: !optionsExists ? Number(data.price) : null,
 					cost: !optionsExists ? Number(data.cost) : null,
 					stocks: !optionsExists ? Number(data.stocks) : null,
-					createdAt: new Date().getTime(),
-					updatedAt: new Date().getTime()
+					createdAt: null,
+					updatedAt: null
 				};
 
 				console.log(newItem);
 
 				if (item?.id) {
+					newItem.updatedAt = new Date().getTime();
 					API.updateProduct(newItem, products).then((newProducts) =>
 						setProducts(newProducts)
 					);
 				} else {
+					newItem.createdAt = new Date().getTime();
 					API.createProduct(newItem, products).then((newProducts) =>
 						setProducts(newProducts)
 					);

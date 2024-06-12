@@ -14,8 +14,8 @@ export type ProductItemType = {
 			stocks: number | string;
 		};
 	} | null;
-	updatedAt?: number | Date;
-	createdAt?: number | Date;
+	updatedAt?: number | Date | null;
+	createdAt?: number | Date | null;
 };
 
 export type ProductCategoryType = {
