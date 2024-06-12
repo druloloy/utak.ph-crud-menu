@@ -34,7 +34,11 @@ function removeItemById(
 	products: Record<string, ProductItemType[]> | undefined
 ) {
 	const updatedData = { ...products };
-	updatedData[itemId] = updatedData[itemId].filter((i) => i.id !== itemId);
+	for (const category in updatedData) {
+		updatedData[category] = updatedData[category].filter(
+			(item) => item.id !== itemId
+		);
+	}
 	return updatedData;
 }
 
